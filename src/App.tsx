@@ -6,7 +6,7 @@ import "./App.css";
 const App: React.FC = () => {
   return (
     <div>
-      <Particles />
+      <Particles />tes
       <Home />
     </div>
   );
