@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import * as THREE from "three";
-import KIAN from "../public/kian.png";
+import Kian from "../public/kian.png";
 import Particle from "../public/particle.png";
 
 const Particles: React.FC = () => {
@@ -61,7 +61,7 @@ const Particles: React.FC = () => {
       scene.add(particles);
 
       const sphereGeometry = new THREE.SphereGeometry(250, 256, 256);
-      const sphereTexture = new THREE.TextureLoader().load(KIAN, (texture) => {
+      const sphereTexture = new THREE.TextureLoader().load(Kian, (texture) => {
         texture.colorSpace = THREE.SRGBColorSpace;
         texture.mapping = THREE.EquirectangularReflectionMapping;
       });
