@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import * as THREE from "three";
+import KIAN from "../public/kian.png";
+import Particle from "../public/particle.png";
 
 const Particles: React.FC = () => {
   useEffect(() => {
@@ -27,7 +29,7 @@ const Particles: React.FC = () => {
       const vertices: number[] = [];
 
       const textureLoader = new THREE.TextureLoader();
-      const sprite = textureLoader.load("../public/particle.png", (texture) => {
+      const sprite = textureLoader.load(Particle, (texture) => {
         texture.colorSpace = THREE.SRGBColorSpace;
       });
 
@@ -59,13 +61,10 @@ const Particles: React.FC = () => {
       scene.add(particles);
 
       const sphereGeometry = new THREE.SphereGeometry(250, 256, 256);
-      const sphereTexture = new THREE.TextureLoader().load(
-        "../public/kian.png",
-        (texture) => {
-          texture.colorSpace = THREE.SRGBColorSpace;
-          texture.mapping = THREE.EquirectangularReflectionMapping;
-        },
-      );
+      const sphereTexture = new THREE.TextureLoader().load(KIAN, (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+      });
       const sphereMaterial = new THREE.MeshStandardMaterial({
         envMap: sphereTexture,
         roughness: 0,
