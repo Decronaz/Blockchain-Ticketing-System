@@ -1,0 +1,25 @@
+@font-face {
+  font-family: "PassionOne";
+  src: url("../public/PassionOne-Regular.ttf");
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "PassionOne", sans-serif;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+li {
+  list-style: none;
+}
+
+p {
+  margin: 0;
+  display: flex;
+}
+
+span {
+  font-family: inherit;
+}
