@@ -29,8 +29,8 @@ const Bar = () => {
   }, []);
 
   return (
-    <div className="fixed left-0 top-0 flex h-screen w-screen">
-      <p className="absolute left-0 top-0 ml-2 flex items-start gap-2">
+    <>
+      <p className="fixed left-0 top-0 ml-2 flex items-start gap-2">
         {heights.map((height, index) => (
           <a
             key={index}
@@ -39,7 +39,7 @@ const Bar = () => {
           />
         ))}
       </p>
-      <p className="absolute bottom-0 left-0 ml-2 flex items-end gap-2">
+      <p className="fixed bottom-0 left-0 ml-2 flex items-end gap-2">
         {heights.map((height, index) => (
           <a
             key={index}
@@ -48,7 +48,7 @@ const Bar = () => {
           />
         ))}
       </p>
-      <p className="absolute right-0 top-0 mr-2 flex flex-row-reverse items-start gap-2">
+      <p className="fixed right-0 top-0 mr-2 flex flex-row-reverse items-start gap-2">
         {heights.map((height, index) => (
           <a
             key={index}
@@ -57,7 +57,7 @@ const Bar = () => {
           />
         ))}
       </p>
-      <p className="absolute bottom-0 right-0 mr-2 flex flex-row-reverse items-end gap-2">
+      <p className="fixed bottom-0 right-0 mr-2 flex flex-row-reverse items-end gap-2">
         {heights.map((height, index) => (
           <a
             key={index}
@@ -66,13 +66,13 @@ const Bar = () => {
           />
         ))}
       </p>
-    </div>
+    </>
   );
 };
 
 const Body = () => {
   return (
-    <div className="fixed left-0 top-0 flex h-screen w-screen flex-col items-center justify-center text-center">
+    <div className="fixed flex flex-col items-center justify-center text-center">
       <p className="relative flex items-center justify-center">
         <a className="absolute text-8xl text-black blur">
           GOLDEN FESTIVAL CONCERT
