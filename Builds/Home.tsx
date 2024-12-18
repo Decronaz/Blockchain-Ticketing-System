@@ -345,33 +345,33 @@ const Registration = () => {
   );
 };
 
-const Profile = () => {
-  return (
-    <div className="flex w-1/2 flex-col items-start gap-2 px-16 py-14 text-sm">
-      <div className="flex w-full justify-between gap-2">
-        <input
-          type="text"
-          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-          placeholder="First Name"
-        />
-        <input
-          type="text"
-          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-          placeholder="Last Name"
-        />
-      </div>
-      <div className="flex w-full justify-between gap-2">
-        <input
-          type="text"
-          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-          placeholder="Email address"
-        />
-        <input
-          type="text"
-          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-          placeholder="Phone Number"
-        />
-      </div>
-    </div>
-  );
-};
+// const Profile = () => {
+//   return (
+//     <div className="flex w-1/2 flex-col items-start gap-2 px-16 py-14 text-sm">
+//       <div className="flex w-full justify-between gap-2">
+//         <input
+//           type="text"
+//           className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
+//           placeholder="First Name"
+//         />
+//         <input
+//           type="text"
+//           className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
+//           placeholder="Last Name"
+//         />
+//       </div>
+//       <div className="flex w-full justify-between gap-2">
+//         <input
+//           type="text"
+//           className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
+//           placeholder="Email address"
+//         />
+//         <input
+//           type="text"
+//           className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
+//           placeholder="Phone Number"
+//         />
+//       </div>
+//     </div>
+//   );
+// };
