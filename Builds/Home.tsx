@@ -291,7 +291,7 @@ const Registration = () => {
   return (
     <div className="flex w-1/2 bg-neutral-100 px-16 py-14">
       <div
-        className={`grid h-full w-full gap-4 overflow-y-auto overflow-x-hidden pb-2 pl-5 pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2 ${activeIndex === null ? "" : "pr-5"}`}
+        className={`h-full w-full overflow-y-auto overflow-x-hidden pl-5 pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2 ${activeIndex === null ? "" : "pr-5"}`}
       >
         {Array.from({ length: 8 }).map((_, index) => {
           const Sections = ["A", "B", "C", "D", "E", "F", "G", "H"];
@@ -319,7 +319,7 @@ const Registration = () => {
             <div
               key={index}
               onClick={() => handleClick(index)}
-              className={`flex h-32 w-full origin-top cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md transition-transform duration-300 hover:border-red-300 ${isVisible ? "" : "hidden"}`}
+              className={`mb-4 flex h-32 w-full origin-top cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md transition-transform duration-300 hover:border-red-300 ${isVisible ? "" : "hidden"}`}
             >
               <p className="flex flex-col justify-between text-left">
                 <a className="font-sans text-base font-semibold">
@@ -339,6 +339,7 @@ const Registration = () => {
             </div>
           );
         })}
+        {/* <div>tes</div> */}
       </div>
     </div>
   );
