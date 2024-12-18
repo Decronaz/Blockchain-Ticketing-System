@@ -387,12 +387,12 @@ const Registration = () => {
             {Array.from({ length: count }).map((_, index) => (
               <p
                 key={index}
-                className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border-[1.5px] border-neutral-200 bg-white shadow-md"
+                className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border-[1.5px] border-red-500 bg-white text-red-500 shadow-md hover:border-neutral-400 hover:text-neutral-400"
               >
                 <a className="flex aspect-square h-full items-center justify-center">
                   <FaUserAlt className="text-xl" />
                 </a>
-                <a className="font-sans">Person {index + 1}</a>
+                <a className="font-sans font-medium">Person {index + 1}</a>
               </p>
             ))}
           </div>
