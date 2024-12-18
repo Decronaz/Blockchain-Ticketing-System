@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import * as THREE from "three";
-import Kian from "../public/kian.png";
-import Particle from "../public/particle.png";
+import Kian from "/kian.png";
+import Particle from "/particle.png";
 
 const Particles: React.FC = () => {
   useEffect(() => {

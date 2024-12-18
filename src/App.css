@@ -1,6 +1,6 @@
 @font-face {
   font-family: "PassionOne";
-  src: url("../public/PassionOne-Regular.ttf");
+  src: url("/PassionOne-Regular.ttf");
 }
 
 * {
