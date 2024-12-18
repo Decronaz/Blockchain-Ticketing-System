@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import KianMusic from "/kianmusic.mp3";
-import { FaPause, FaPlay, FaTicketAlt, FaTimes } from "react-icons/fa";
+import {
+  FaMinus,
+  FaPause,
+  FaPlay,
+  FaPlus,
+  FaTicketAlt,
+  FaTimes,
+  FaUserAlt,
+} from "react-icons/fa";
 
 interface BodyProps {
   onBuyTicket: () => void;
@@ -115,6 +123,15 @@ const Overlay = () => {
   const [audio] = useState(new Audio(KianMusic));
   const [isPlaying, setIsPlaying] = useState(false);
 
+  const handleMusic = () => {
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
   useEffect(() => {
     const handleEnded = () => {
       audio.currentTime = 0;
@@ -127,15 +144,6 @@ const Overlay = () => {
       audio.removeEventListener("ended", handleEnded);
     };
   }, [audio]);
-
-  const handleMusic = () => {
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
 
   return (
     <>
@@ -220,6 +228,7 @@ const Container: React.FC<ContainerProps & { onClose: () => void }> = ({
         <div className="relative flex h-[30rem] w-full max-w-4xl overflow-clip rounded-2xl bg-neutral-100 text-center">
           <Stage />
           <Registration />
+          <Profile />
           <div
             className="absolute right-3 top-3 cursor-pointer text-xl"
             onClick={onClose}
@@ -286,31 +295,45 @@ const Registration = () => {
 
   const handleClick = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
+    setCount(1);
+  };
+
+  const Sections = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  const TicketsRemain = ["3", "5", "6", "10", "12", "17", "14", "19"];
+  const Prices = [
+    "Rp4.016.989",
+    "Rp3.398.436",
+    "Rp3.525.849",
+    "Rp2.954.494",
+    "Rp2.903.483",
+    "Rp2.107.325",
+    "Rp2.495.853",
+    "Rp2.149.751",
+  ];
+
+  const [count, setCount] = useState(1);
+
+  const handleDecrease = () => {
+    if (count > 1) {
+      setCount(count - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (count < Number(TicketsRemain[activeIndex ?? 0])) {
+      setCount(count + 1);
+    }
   };
 
   return (
     <div className="flex w-1/2 bg-neutral-100 px-16 py-14">
       <div
-        className={`h-full w-full overflow-y-auto overflow-x-hidden pl-5 pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2 ${activeIndex === null ? "" : "pr-5"}`}
+        className={`flex h-full w-full flex-col overflow-x-hidden pl-5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2 ${activeIndex === null ? "overflow-y-auto pr-3" : "overflow-y-hidden pr-5"}`}
       >
         {Array.from({ length: 8 }).map((_, index) => {
-          const Sections = ["A", "B", "C", "D", "E", "F", "G", "H"];
           const SectionsIndex = Sections[index % Sections.length];
-
-          const TicketsRemain = ["3", "5", "6", "10", "12", "17", "14", "19"];
           const TicketsRemainIndex =
             TicketsRemain[index % TicketsRemain.length];
-
-          const Prices = [
-            "Rp4.016.989",
-            "Rp3.398.436",
-            "Rp3.525.849",
-            "Rp2.954.494",
-            "Rp2.903.483",
-            "Rp2.107.325",
-            "Rp2.495.853",
-            "Rp2.149.751",
-          ];
           const PricesIndex = Prices[index % Prices.length];
 
           const isVisible = activeIndex === null || activeIndex === index;
@@ -319,7 +342,7 @@ const Registration = () => {
             <div
               key={index}
               onClick={() => handleClick(index)}
-              className={`mb-4 flex h-32 w-full origin-top cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md transition-transform duration-300 hover:border-red-300 ${isVisible ? "" : "hidden"}`}
+              className={`mb-4 min-h-32 w-full origin-top cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md transition-transform duration-300 hover:border-red-300 ${isVisible ? "flex" : "hidden"}`}
             >
               <p className="flex flex-col justify-between text-left">
                 <a className="font-sans text-base font-semibold">
@@ -339,39 +362,76 @@ const Registration = () => {
             </div>
           );
         })}
-        {/* <div>tes</div> */}
+        <div
+          className={`w-full flex-grow flex-col gap-2 text-sm ${activeIndex === null ? "hidden" : "flex"}`}
+        >
+          <a className="font-sans">How many tickets?</a>
+          <p className="flex w-full items-center justify-center">
+            <a
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
+              onClick={handleDecrease}
+            >
+              <FaMinus />
+            </a>
+            <a className="flex h-10 w-10 items-center justify-center font-sans text-base">
+              {count}
+            </a>
+            <a
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
+              onClick={handleIncrease}
+            >
+              <FaPlus />
+            </a>
+          </p>
+          <div className="mt-2 h-[92px] w-[calc(100%+1.25rem)] overflow-x-hidden overflow-y-scroll pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2">
+            {Array.from({ length: count }).map((_, index) => (
+              <p
+                key={index}
+                className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border-[1.5px] border-neutral-200 bg-white shadow-md"
+              >
+                <a className="flex aspect-square h-full items-center justify-center">
+                  <FaUserAlt className="text-xl" />
+                </a>
+                <a className="font-sans">Person {index + 1}</a>
+              </p>
+            ))}
+          </div>
+          <a className="flex h-10 w-full items-center justify-center rounded-lg bg-blue-400 font-sans">
+            Buy Now
+          </a>
+        </div>
       </div>
     </div>
   );
 };
 
-// const Profile = () => {
-//   return (
-//     <div className="flex w-1/2 flex-col items-start gap-2 px-16 py-14 text-sm">
-//       <div className="flex w-full justify-between gap-2">
-//         <input
-//           type="text"
-//           className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-//           placeholder="First Name"
-//         />
-//         <input
-//           type="text"
-//           className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-//           placeholder="Last Name"
-//         />
-//       </div>
-//       <div className="flex w-full justify-between gap-2">
-//         <input
-//           type="text"
-//           className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-//           placeholder="Email address"
-//         />
-//         <input
-//           type="text"
-//           className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-//           placeholder="Phone Number"
-//         />
-//       </div>
-//     </div>
-//   );
-// };
+const Profile = () => {
+  return (
+    <div className="hidden w-1/2 flex-col items-start gap-2 px-16 py-14 text-sm">
+      <div className="flex w-full justify-between gap-2">
+        <input
+          type="text"
+          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
+          placeholder="First Name"
+        />
+        <input
+          type="text"
+          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
+          placeholder="Last Name"
+        />
+      </div>
+      <div className="flex w-full justify-between gap-2">
+        <input
+          type="text"
+          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
+          placeholder="Email address"
+        />
+        <input
+          type="text"
+          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
+          placeholder="Phone Number"
+        />
+      </div>
+    </div>
+  );
+};
