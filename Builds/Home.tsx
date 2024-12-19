@@ -228,7 +228,6 @@ const Container: React.FC<ContainerProps & { onClose: () => void }> = ({
         <div className="relative flex h-[30rem] w-full max-w-4xl overflow-clip rounded-2xl bg-neutral-100 text-center">
           <Stage />
           <Registration />
-          <Profile />
           <div
             className="absolute right-3 top-3 cursor-pointer text-xl"
             onClick={onClose}
@@ -325,6 +324,13 @@ const Registration = () => {
     }
   };
 
+  const [activeProfileIndex, setActiveProfileIndex] = useState<number | null>(
+    null,
+  );
+  const handleProfileClick = (index: number) => {
+    setActiveProfileIndex(activeProfileIndex === index ? null : index);
+  };
+
   return (
     <div className="flex w-1/2 bg-neutral-100 px-16 py-14">
       <div
@@ -342,7 +348,7 @@ const Registration = () => {
             <div
               key={index}
               onClick={() => handleClick(index)}
-              className={`mb-4 min-h-32 w-full origin-top cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md transition-transform duration-300 hover:border-red-300 ${isVisible ? "flex" : "hidden"}`}
+              className={`mb-4 min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md hover:border-red-300 ${isVisible ? "flex" : "hidden"} ${activeProfileIndex === null ? "flex" : "hidden"}`}
             >
               <p className="flex flex-col justify-between text-left">
                 <a className="font-sans text-base font-semibold">
@@ -363,10 +369,16 @@ const Registration = () => {
           );
         })}
         <div
-          className={`w-full flex-grow flex-col gap-2 text-sm ${activeIndex === null ? "hidden" : "flex"}`}
+          className={`w-full flex-grow flex-col justify-center gap-2 text-sm ${activeIndex === null ? "hidden" : "flex"}`}
         >
-          <a className="font-sans">How many tickets?</a>
-          <p className="flex w-full items-center justify-center">
+          <a
+            className={`justify-center font-sans ${activeProfileIndex === null ? "flex" : "hidden"}`}
+          >
+            How many tickets?
+          </a>
+          <p
+            className={`w-full items-center justify-center ${activeProfileIndex === null ? "flex" : "hidden"}`}
+          >
             <a
               className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
               onClick={handleDecrease}
@@ -383,11 +395,14 @@ const Registration = () => {
               <FaPlus />
             </a>
           </p>
-          <div className="mt-2 h-[92px] w-[calc(100%+1.25rem)] overflow-x-hidden overflow-y-scroll pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2">
+          <div
+            className={`mt-2 w-[calc(100%+1.25rem)] overflow-x-hidden overflow-y-scroll pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2 ${activeProfileIndex === null ? "h-[92px]" : ""}`}
+          >
             {Array.from({ length: count }).map((_, index) => (
               <p
                 key={index}
-                className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border-[1.5px] border-red-500 bg-white text-red-500 shadow-md hover:border-neutral-400 hover:text-neutral-400"
+                className={`mb-4 h-14 w-full cursor-pointer items-center rounded-xl border-[1.5px] border-red-500 bg-white text-red-500 shadow-md hover:border-neutral-400 hover:text-neutral-400 ${activeProfileIndex !== index && activeProfileIndex !== null ? "hidden" : "flex"}`}
+                onClick={() => handleProfileClick(index)}
               >
                 <a className="flex aspect-square h-full items-center justify-center">
                   <FaUserAlt className="text-xl" />
@@ -396,9 +411,20 @@ const Registration = () => {
               </p>
             ))}
           </div>
-          <a className="flex h-10 w-full items-center justify-center rounded-lg bg-blue-400 font-sans">
+          <a
+            className={`h-10 w-full items-center justify-center rounded-lg bg-blue-400 font-sans ${activeProfileIndex === null ? "flex" : "hidden"}`}
+          >
             Buy Now
           </a>
+          {Array.from({ length: count }).map((_, index) => (
+            <div
+              id={`profile${index + 1}`}
+              className={`w-full flex-col ${activeProfileIndex === index ? "flex" : "hidden"}`}
+              key={index}
+            >
+              <Profile />
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -407,31 +433,47 @@ const Registration = () => {
 
 const Profile = () => {
   return (
-    <div className="hidden w-1/2 flex-col items-start gap-2 px-16 py-14 text-sm">
-      <div className="flex w-full justify-between gap-2">
-        <input
-          type="text"
-          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-          placeholder="First Name"
-        />
-        <input
-          type="text"
-          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-          placeholder="Last Name"
-        />
-      </div>
-      <div className="flex w-full justify-between gap-2">
-        <input
-          type="text"
-          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-          placeholder="Email address"
-        />
-        <input
-          type="text"
-          className="h-10 w-1/2 rounded-lg border-[1px] border-neutral-200 px-3 font-sans outline-none"
-          placeholder="Phone Number"
-        />
-      </div>
-    </div>
+    <>
+      <form action="#">
+        <div className="flex flex-col">
+          <label
+            htmlFor="name"
+            className="mb-2 flex font-sans text-sm font-medium text-neutral-600"
+          >
+            Full Name
+          </label>
+          <input
+            type="text"
+            className="mb-4 w-full rounded-lg border border-neutral-300 bg-white p-2.5 font-sans text-sm text-black placeholder-neutral-500"
+            placeholder="Enter full name"
+            required
+          />
+          <label
+            htmlFor="name"
+            className="mb-2 flex font-sans text-sm font-medium text-neutral-600"
+          >
+            Email Address
+          </label>
+          <input
+            type="text"
+            className="mb-4 w-full rounded-lg border border-neutral-300 bg-white p-2.5 font-sans text-sm text-black placeholder-neutral-500"
+            placeholder="example@gmail.com"
+            required
+          />
+          <label
+            htmlFor="name"
+            className="mb-2 flex font-sans text-sm font-medium text-neutral-600"
+          >
+            Phone Number
+          </label>
+          <input
+            type="text"
+            className="w-full rounded-lg border border-neutral-300 bg-white p-2.5 font-sans text-sm text-black placeholder-neutral-500"
+            placeholder="+62-XXX-XXXX-XXXX"
+            required
+          />
+        </div>
+      </form>
+    </>
   );
 };
