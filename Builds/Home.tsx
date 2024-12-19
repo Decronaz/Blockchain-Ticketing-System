@@ -120,7 +120,11 @@ const Overlay = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const [audio] = useState(new Audio(KianMusic));
+  const [audio] = useState(() => {
+    const newAudio = new Audio(KianMusic);
+    newAudio.volume = 0.2;
+    return newAudio;
+  });
   const [isPlaying, setIsPlaying] = useState(false);
 
   const handleMusic = () => {
@@ -173,11 +177,11 @@ const Overlay = () => {
             ))}
           </p>
         </div>
-        <div className="absolute bottom-0 translate-y-full content-center text-center font-sans">
+        <div className="absolute bottom-0 translate-y-full content-center text-center">
           Click To Play
         </div>
       </div>
-      <div className="fixed bottom-5 bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 bg-clip-text font-sans text-sm text-transparent">
+      <div className="fixed bottom-5 bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 bg-clip-text text-sm text-transparent">
         ©2024. All rights reserved.
       </div>
     </>
@@ -188,23 +192,23 @@ const Body: React.FC<BodyProps> = ({ onBuyTicket }) => {
   return (
     <div className="fixed flex flex-col items-center justify-center text-center">
       <p className="relative flex items-center justify-center">
-        <a className="absolute text-8xl text-black blur">
+        <a className="absolute font-['PassionOne'] text-8xl text-black blur">
           GOLDEN FESTIVAL CONCERT
         </a>
-        <a className="z-10 bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 bg-clip-text text-8xl text-transparent">
+        <a className="z-10 bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 bg-clip-text font-['PassionOne'] text-8xl text-transparent">
           GOLDEN FESTIVAL CONCERT
         </a>
       </p>
       <p className="relative flex items-center justify-center">
-        <a className="absolute mb-8 text-3xl text-black blur">
+        <a className="absolute mb-8 font-['PassionOne'] text-3xl text-black blur">
           PRESENTED BY DJ KIAN UNAJA
         </a>
-        <a className="z-10 mb-8 text-3xl text-white">
+        <a className="z-10 mb-8 font-['PassionOne'] text-3xl text-white">
           PRESENTED BY DJ KIAN UNAJA
         </a>
       </p>
       <a
-        className="h-16 w-48 cursor-pointer content-center rounded-lg bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 text-3xl text-black shadow-[0_0_50px_5px_black]"
+        className="h-16 w-48 cursor-pointer content-center rounded-lg bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 font-['PassionOne'] text-3xl text-black shadow-[0_0_50px_5px_black]"
         onClick={onBuyTicket}
       >
         BUY TICKET
@@ -245,41 +249,41 @@ const Stage = () => {
     <div className="flex w-1/2 items-center justify-center bg-neutral-200 px-6">
       <div className="relative flex aspect-square w-3/4 flex-col gap-1 overflow-clip rounded-[50%_50%_50%_50%_/_10%_10%_10%_10%] bg-white shadow-[0_0_0_8px_white,_0_0_0_10px_gray]">
         <p className="h-1/4 w-full gap-1">
-          <a className="flex h-full w-2/6 items-center justify-center bg-blue-200 font-sans hover:bg-blue-300">
+          <a className="flex h-full w-2/6 items-center justify-center bg-blue-200 hover:bg-blue-300">
             F
           </a>
-          <a className="flex h-full w-3/6 items-center justify-center bg-blue-200 font-sans hover:bg-blue-300">
+          <a className="flex h-full w-3/6 items-center justify-center bg-blue-200 hover:bg-blue-300">
             G
           </a>
-          <a className="flex h-full w-2/6 items-center justify-center bg-blue-200 font-sans hover:bg-blue-300">
+          <a className="flex h-full w-2/6 items-center justify-center bg-blue-200 hover:bg-blue-300">
             H
           </a>
         </p>
         <p className="h-2/4 w-full gap-1 border-white">
-          <a className="flex h-full w-1/5 items-center justify-center bg-blue-200 font-sans hover:bg-blue-300">
+          <a className="flex h-full w-1/5 items-center justify-center bg-blue-200 hover:bg-blue-300">
             B
           </a>
-          <a className="h-full w-3/5 bg-blue-200 font-sans hover:bg-blue-300">
+          <a className="h-full w-3/5 bg-blue-200 hover:bg-blue-300">
             <span className="flex h-1/3 items-center justify-center">A</span>
           </a>
-          <a className="flex h-full w-1/5 items-center justify-center bg-blue-200 font-sans hover:bg-blue-300">
+          <a className="flex h-full w-1/5 items-center justify-center bg-blue-200 hover:bg-blue-300">
             C
           </a>
         </p>
         <p className="h-1/4 w-full">
-          <a className="flex h-full w-1/2 justify-start bg-blue-200 font-sans hover:bg-blue-300">
+          <a className="flex h-full w-1/2 justify-start bg-blue-200 hover:bg-blue-300">
             <span className="flex h-3/4 w-1/2 items-center justify-center">
               D
             </span>
           </a>
-          <a className="flex h-full w-1/2 justify-end bg-blue-200 font-sans hover:bg-blue-300">
+          <a className="flex h-full w-1/2 justify-end bg-blue-200 hover:bg-blue-300">
             <span className="flex h-3/4 w-1/2 items-center justify-center">
               E
             </span>
           </a>
         </p>
         <p className="absolute bottom-1/2 left-1/2 h-1/3 w-1/12 -translate-x-1/2 translate-y-full bg-neutral-400 shadow-[0_0_0_4px_white]" />
-        <p className="absolute bottom-0 left-1/2 flex h-1/3 w-1/2 -translate-x-1/2 items-center justify-center overflow-clip rounded-[50%_50%_50%_50%_/_100%_100%_0%_0%] border-4 border-b-0 border-white bg-neutral-400 font-sans font-bold">
+        <p className="absolute bottom-0 left-1/2 flex h-1/3 w-1/2 -translate-x-1/2 items-center justify-center overflow-clip rounded-[50%_50%_50%_50%_/_100%_100%_0%_0%] border-4 border-b-0 border-white bg-neutral-400 font-bold">
           STAGE
         </p>
         <p className="absolute bottom-1/2 left-1/2 h-1/6 w-1/4 -translate-x-1/2 translate-y-1/2 border-4 border-white bg-neutral-400" />
@@ -349,22 +353,20 @@ const Registration = () => {
                 <div
                   key={index}
                   onClick={() => handleClick(index)}
-                  className={`mb-4 flex min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md hover:border-red-300 ${activeProfileIndex === null ? "flex" : "hidden"}`}
+                  className="mb-4 flex min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 shadow-md hover:border-red-300"
                 >
                   <p className="flex flex-col justify-between text-left">
-                    <a className="font-sans text-base font-semibold">
+                    <a className="text-base font-semibold">
                       Section {SectionsIndex}
                     </a>
-                    <a className="flex items-center gap-1.5 font-sans text-xs text-red-600">
+                    <a className="flex items-center gap-1.5 text-xs text-red-600">
                       <FaTicketAlt className="text-base" />
                       {TicketsRemainIndex} tickets remaining
                     </a>
                   </p>
                   <p className="flex flex-col text-right">
-                    <a className="font-sans text-sm font-bold">{PricesIndex}</a>
-                    <a className="font-sans text-xs font-medium text-neutral-400">
-                      each
-                    </a>
+                    <a className="text-sm font-bold">{PricesIndex}</a>
+                    <a className="text-xs font-medium text-neutral-400">each</a>
                   </p>
                 </div>
               )
@@ -373,7 +375,7 @@ const Registration = () => {
         {activeIndex === null ? null : (
           <div className="flex w-full flex-grow flex-col justify-center gap-2 text-sm">
             {activeProfileIndex === null && (
-              <a className="flex justify-center font-sans">How many tickets?</a>
+              <a className="flex justify-center">How many tickets?</a>
             )}
             {activeProfileIndex === null && (
               <p className="flex w-full items-center justify-center">
@@ -383,7 +385,7 @@ const Registration = () => {
                 >
                   <FaMinus />
                 </a>
-                <a className="flex h-10 w-10 items-center justify-center font-sans text-base">
+                <a className="flex h-10 w-10 items-center justify-center text-base">
                   {count}
                 </a>
                 <a
@@ -402,84 +404,70 @@ const Registration = () => {
                 activeProfileIndex !== null ? null : (
                   <p
                     key={index}
-                    className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border-[1.5px] border-red-500 bg-white text-red-500 shadow-md hover:border-neutral-400 hover:text-neutral-400"
+                    className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border border-neutral-400 bg-white text-neutral-400 shadow-md"
                     onClick={() => handleProfileClick(index)}
                   >
                     <a className="flex aspect-square h-full items-center justify-center">
                       <FaUserAlt className="text-xl" />
                     </a>
-                    <a className="font-sans font-medium">Person {index + 1}</a>
+                    <a className="font-medium">Person {index + 1}</a>
                   </p>
                 ),
               )}
             </div>
             {activeProfileIndex === null && (
-              <a className="flex h-10 w-full items-center justify-center rounded-lg bg-blue-400 font-sans">
+              <a className="flex h-10 w-full cursor-pointer items-center justify-center rounded-lg bg-blue-400">
                 Buy Now
               </a>
             )}
-            {Array.from({ length: count }).map(
-              (_, index) =>
-                activeProfileIndex === index && (
-                  <div
-                    id={`profile${index + 1}`}
-                    className="flex w-full flex-col"
-                    key={index}
-                  >
-                    <Profile />
+            {Array.from({ length: count }).map((_, index) => (
+              <div
+                id={`profile${index + 1}`}
+                className={`w-full flex-col ${activeProfileIndex === index ? "flex" : "hidden"}`}
+                key={index}
+              >
+                <form action="#">
+                  <div className="flex flex-col">
+                    <a className="mb-2 flex text-sm font-medium text-neutral-600">
+                      Full Name
+                    </a>
+                    <input
+                      id="name"
+                      autoComplete="off"
+                      type="text"
+                      className="mb-4 w-full rounded-lg border border-neutral-300 bg-white p-2.5 text-sm text-black placeholder-neutral-500"
+                      placeholder="Enter full name"
+                      required
+                    />
+                    <a className="mb-2 flex text-sm font-medium text-neutral-600">
+                      Email Address
+                    </a>
+                    <input
+                      id="email"
+                      autoComplete="off"
+                      type="email"
+                      className="mb-4 w-full rounded-lg border border-neutral-300 bg-white p-2.5 text-sm text-black placeholder-neutral-500"
+                      placeholder="example@gmail.com"
+                      required
+                    />
+                    <a className="mb-2 flex text-sm font-medium text-neutral-600">
+                      Phone Number
+                    </a>
+                    <input
+                      id="phone"
+                      autoComplete="off"
+                      type="text"
+                      className="w-full rounded-lg border border-neutral-300 bg-white p-2.5 text-sm text-black placeholder-neutral-500"
+                      placeholder="+62-XXX-XXXX-XXXX"
+                      required
+                    />
                   </div>
-                ),
-            )}
+                </form>
+              </div>
+            ))}
           </div>
         )}
       </div>
     </div>
-  );
-};
-
-const Profile = () => {
-  return (
-    <>
-      <form action="#">
-        <div className="flex flex-col">
-          <label
-            htmlFor="name"
-            className="mb-2 flex font-sans text-sm font-medium text-neutral-600"
-          >
-            Full Name
-          </label>
-          <input
-            type="text"
-            className="mb-4 w-full rounded-lg border border-neutral-300 bg-white p-2.5 font-sans text-sm text-black placeholder-neutral-500"
-            placeholder="Enter full name"
-            required
-          />
-          <label
-            htmlFor="name"
-            className="mb-2 flex font-sans text-sm font-medium text-neutral-600"
-          >
-            Email Address
-          </label>
-          <input
-            type="text"
-            className="mb-4 w-full rounded-lg border border-neutral-300 bg-white p-2.5 font-sans text-sm text-black placeholder-neutral-500"
-            placeholder="example@gmail.com"
-            required
-          />
-          <label
-            htmlFor="name"
-            className="mb-2 flex font-sans text-sm font-medium text-neutral-600"
-          >
-            Phone Number
-          </label>
-          <input
-            type="text"
-            className="w-full rounded-lg border border-neutral-300 bg-white p-2.5 font-sans text-sm text-black placeholder-neutral-500"
-            placeholder="+62-XXX-XXXX-XXXX"
-            required
-          />
-        </div>
-      </form>
-    </>
   );
 };
