@@ -344,88 +344,94 @@ const Registration = () => {
 
           const isVisible = activeIndex === null || activeIndex === index;
 
-          return (
-            <div
-              key={index}
-              onClick={() => handleClick(index)}
-              className={`mb-4 min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md hover:border-red-300 ${isVisible ? "flex" : "hidden"} ${activeProfileIndex === null ? "flex" : "hidden"}`}
-            >
-              <p className="flex flex-col justify-between text-left">
-                <a className="font-sans text-base font-semibold">
-                  Section {SectionsIndex}
-                </a>
-                <a className="flex items-center gap-1.5 font-sans text-xs text-red-600">
-                  <FaTicketAlt className="text-base" />
-                  {TicketsRemainIndex} tickets remaining
-                </a>
-              </p>
-              <p className="flex flex-col text-right">
-                <a className="font-sans text-sm font-bold">{PricesIndex}</a>
-                <a className="font-sans text-xs font-medium text-neutral-400">
-                  each
-                </a>
-              </p>
-            </div>
-          );
+          return activeProfileIndex === null
+            ? isVisible && (
+                <div
+                  key={index}
+                  onClick={() => handleClick(index)}
+                  className={`mb-4 flex min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 font-sans shadow-md hover:border-red-300 ${activeProfileIndex === null ? "flex" : "hidden"}`}
+                >
+                  <p className="flex flex-col justify-between text-left">
+                    <a className="font-sans text-base font-semibold">
+                      Section {SectionsIndex}
+                    </a>
+                    <a className="flex items-center gap-1.5 font-sans text-xs text-red-600">
+                      <FaTicketAlt className="text-base" />
+                      {TicketsRemainIndex} tickets remaining
+                    </a>
+                  </p>
+                  <p className="flex flex-col text-right">
+                    <a className="font-sans text-sm font-bold">{PricesIndex}</a>
+                    <a className="font-sans text-xs font-medium text-neutral-400">
+                      each
+                    </a>
+                  </p>
+                </div>
+              )
+            : null;
         })}
-        <div
-          className={`w-full flex-grow flex-col justify-center gap-2 text-sm ${activeIndex === null ? "hidden" : "flex"}`}
-        >
-          <a
-            className={`justify-center font-sans ${activeProfileIndex === null ? "flex" : "hidden"}`}
-          >
-            How many tickets?
-          </a>
-          <p
-            className={`w-full items-center justify-center ${activeProfileIndex === null ? "flex" : "hidden"}`}
-          >
-            <a
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
-              onClick={handleDecrease}
-            >
-              <FaMinus />
-            </a>
-            <a className="flex h-10 w-10 items-center justify-center font-sans text-base">
-              {count}
-            </a>
-            <a
-              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
-              onClick={handleIncrease}
-            >
-              <FaPlus />
-            </a>
-          </p>
-          <div
-            className={`mt-2 w-[calc(100%+1.25rem)] overflow-x-hidden overflow-y-scroll pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2 ${activeProfileIndex === null ? "h-[92px]" : ""}`}
-          >
-            {Array.from({ length: count }).map((_, index) => (
-              <p
-                key={index}
-                className={`mb-4 h-14 w-full cursor-pointer items-center rounded-xl border-[1.5px] border-red-500 bg-white text-red-500 shadow-md hover:border-neutral-400 hover:text-neutral-400 ${activeProfileIndex !== index && activeProfileIndex !== null ? "hidden" : "flex"}`}
-                onClick={() => handleProfileClick(index)}
-              >
-                <a className="flex aspect-square h-full items-center justify-center">
-                  <FaUserAlt className="text-xl" />
+        {activeIndex === null ? null : (
+          <div className="flex w-full flex-grow flex-col justify-center gap-2 text-sm">
+            {activeProfileIndex === null && (
+              <a className="flex justify-center font-sans">How many tickets?</a>
+            )}
+            {activeProfileIndex === null && (
+              <p className="flex w-full items-center justify-center">
+                <a
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
+                  onClick={handleDecrease}
+                >
+                  <FaMinus />
                 </a>
-                <a className="font-sans font-medium">Person {index + 1}</a>
+                <a className="flex h-10 w-10 items-center justify-center font-sans text-base">
+                  {count}
+                </a>
+                <a
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
+                  onClick={handleIncrease}
+                >
+                  <FaPlus />
+                </a>
               </p>
-            ))}
-          </div>
-          <a
-            className={`h-10 w-full items-center justify-center rounded-lg bg-blue-400 font-sans ${activeProfileIndex === null ? "flex" : "hidden"}`}
-          >
-            Buy Now
-          </a>
-          {Array.from({ length: count }).map((_, index) => (
+            )}
             <div
-              id={`profile${index + 1}`}
-              className={`w-full flex-col ${activeProfileIndex === index ? "flex" : "hidden"}`}
-              key={index}
+              className={`mt-2 w-[calc(100%+1.25rem)] overflow-x-hidden overflow-y-scroll pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2 ${activeProfileIndex === null ? "h-[92px]" : ""}`}
             >
-              <Profile />
+              {Array.from({ length: count }).map((_, index) =>
+                activeProfileIndex !== index &&
+                activeProfileIndex !== null ? null : (
+                  <p
+                    key={index}
+                    className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border-[1.5px] border-red-500 bg-white text-red-500 shadow-md hover:border-neutral-400 hover:text-neutral-400"
+                    onClick={() => handleProfileClick(index)}
+                  >
+                    <a className="flex aspect-square h-full items-center justify-center">
+                      <FaUserAlt className="text-xl" />
+                    </a>
+                    <a className="font-sans font-medium">Person {index + 1}</a>
+                  </p>
+                ),
+              )}
             </div>
-          ))}
-        </div>
+            {activeProfileIndex === null && (
+              <a className="flex h-10 w-full items-center justify-center rounded-lg bg-blue-400 font-sans">
+                Buy Now
+              </a>
+            )}
+            {Array.from({ length: count }).map(
+              (_, index) =>
+                activeProfileIndex === index && (
+                  <div
+                    id={`profile${index + 1}`}
+                    className="flex w-full flex-col"
+                    key={index}
+                  >
+                    <Profile />
+                  </div>
+                ),
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
