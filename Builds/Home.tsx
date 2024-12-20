@@ -249,34 +249,34 @@ const Stage = () => {
     <div className="flex w-1/2 items-center justify-center bg-neutral-200 px-6">
       <div className="relative flex aspect-square w-3/4 flex-col gap-1 overflow-clip rounded-[50%_50%_50%_50%_/_10%_10%_10%_10%] bg-white shadow-[0_0_0_8px_white,_0_0_0_10px_gray]">
         <p className="h-1/4 w-full gap-1">
-          <a className="flex h-full w-2/6 items-center justify-center bg-blue-200 hover:bg-blue-300">
+          <a className="flex h-full w-2/6 cursor-pointer items-center justify-center bg-blue-200 hover:bg-blue-300">
             F
           </a>
-          <a className="flex h-full w-3/6 items-center justify-center bg-blue-200 hover:bg-blue-300">
+          <a className="flex h-full w-3/6 cursor-pointer items-center justify-center bg-blue-200 hover:bg-blue-300">
             G
           </a>
-          <a className="flex h-full w-2/6 items-center justify-center bg-blue-200 hover:bg-blue-300">
+          <a className="flex h-full w-2/6 cursor-pointer items-center justify-center bg-blue-200 hover:bg-blue-300">
             H
           </a>
         </p>
         <p className="h-2/4 w-full gap-1 border-white">
-          <a className="flex h-full w-1/5 items-center justify-center bg-blue-200 hover:bg-blue-300">
+          <a className="flex h-full w-1/5 cursor-pointer items-center justify-center bg-blue-200 hover:bg-blue-300">
             B
           </a>
-          <a className="h-full w-3/5 bg-blue-200 hover:bg-blue-300">
+          <a className="h-full w-3/5 cursor-pointer bg-blue-200 hover:bg-blue-300">
             <span className="flex h-1/3 items-center justify-center">A</span>
           </a>
-          <a className="flex h-full w-1/5 items-center justify-center bg-blue-200 hover:bg-blue-300">
+          <a className="flex h-full w-1/5 cursor-pointer items-center justify-center bg-blue-200 hover:bg-blue-300">
             C
           </a>
         </p>
         <p className="h-1/4 w-full">
-          <a className="flex h-full w-1/2 justify-start bg-blue-200 hover:bg-blue-300">
+          <a className="flex h-full w-1/2 cursor-pointer justify-start bg-blue-200 hover:bg-blue-300">
             <span className="flex h-3/4 w-1/2 items-center justify-center">
               D
             </span>
           </a>
-          <a className="flex h-full w-1/2 justify-end bg-blue-200 hover:bg-blue-300">
+          <a className="flex h-full w-1/2 cursor-pointer justify-end bg-blue-200 hover:bg-blue-300">
             <span className="flex h-3/4 w-1/2 items-center justify-center">
               E
             </span>
@@ -353,7 +353,7 @@ const Registration = () => {
                 <div
                   key={index}
                   onClick={() => handleClick(index)}
-                  className="mb-4 flex min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 shadow-md hover:border-red-300"
+                  className="mb-4 flex min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 shadow-md transition-transform duration-300 hover:scale-95 hover:border-red-300"
                 >
                   <p className="flex flex-col justify-between text-left">
                     <a className="text-base font-semibold">
@@ -380,7 +380,7 @@ const Registration = () => {
             {activeProfileIndex === null && (
               <p className="flex w-full items-center justify-center">
                 <a
-                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-neutral-300 bg-white text-xs text-neutral-500"
                   onClick={handleDecrease}
                 >
                   <FaMinus />
@@ -389,7 +389,7 @@ const Registration = () => {
                   {count}
                 </a>
                 <a
-                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border-[1px] border-neutral-300 bg-white text-xs text-neutral-500"
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-neutral-300 bg-white text-xs text-neutral-500"
                   onClick={handleIncrease}
                 >
                   <FaPlus />
@@ -404,7 +404,7 @@ const Registration = () => {
                 activeProfileIndex !== null ? null : (
                   <p
                     key={index}
-                    className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border border-neutral-400 bg-white text-neutral-400 shadow-md"
+                    className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-xl border border-neutral-400 bg-white text-neutral-400 shadow-md transition-transform duration-300 hover:scale-95 hover:border-neutral-600 hover:text-neutral-600"
                     onClick={() => handleProfileClick(index)}
                   >
                     <a className="flex aspect-square h-full items-center justify-center">
