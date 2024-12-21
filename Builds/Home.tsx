@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import KianMusic from "/kianmusic.mp3";
 import {
+  FaEnvelope,
   FaMinus,
   FaPause,
+  FaPhone,
   FaPlay,
   FaPlus,
   FaTicketAlt,
   FaTimes,
   FaUserAlt,
 } from "react-icons/fa";
+import emailjs from "@emailjs/browser";
 
 interface BodyProps {
   onBuyTicket: () => void;
@@ -201,10 +204,10 @@ const Body: React.FC<BodyProps> = ({ onBuyTicket }) => {
       </p>
       <p className="relative flex items-center justify-center">
         <a className="absolute mb-8 font-['PassionOne'] text-3xl text-black blur">
-          PRESENTED BY DJ KIAN BOY
+          PRESENTED BY DJ KIAN BOY JUNIOR
         </a>
         <a className="z-10 mb-8 font-['PassionOne'] text-3xl text-white">
-          PRESENTED BY DJ KIAN BOY
+          PRESENTED BY DJ KIAN BOY JUNIOR
         </a>
       </p>
       <a
@@ -294,6 +297,8 @@ const Stage = () => {
 };
 
 const Registration = () => {
+  const form = useRef<HTMLFormElement>(null);
+
   const Sections = ["A", "B", "C", "D", "E", "F", "G", "H"];
   const TicketsRemain = ["3", "5", "6", "10", "12", "17", "14", "19"];
   const Prices = [
@@ -316,12 +321,16 @@ const Registration = () => {
     Array(count).fill(false),
   );
   const [names, setNames] = useState<string[]>(Array(count).fill(""));
+  const [formErrors, setFormErrors] = useState<boolean[]>(
+    Array(count).fill(false),
+  );
 
   const handleClick = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
     setCount(1);
     setFormFilled(Array(count).fill(false));
     setNames(Array(count).fill(""));
+    setFormErrors(Array(count).fill(false));
   };
 
   const handleDecrease = () => {
@@ -329,6 +338,7 @@ const Registration = () => {
       setCount(count - 1);
       setFormFilled(formFilled.slice(0, count - 1));
       setNames(names.slice(0, count - 1));
+      setFormErrors(formFilled.slice(0, count - 1));
     }
   };
 
@@ -337,6 +347,7 @@ const Registration = () => {
       setCount(count + 1);
       setFormFilled([...formFilled, false]);
       setNames([...names, ""]);
+      setFormErrors([...formFilled, false]);
     }
   };
 
@@ -365,25 +376,30 @@ const Registration = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const allFilled = names.every((name, index) => {
+    const newFormErrors = Array(count).fill(false);
+
+    names.forEach((name, index) => {
       const email = document.getElementById(
         `email${index + 1}`,
       ) as HTMLInputElement;
       const phone = document.getElementById(
         `phone${index + 1}`,
       ) as HTMLInputElement;
-      return (
-        name.trim() !== "" &&
-        email.value.trim() !== "" &&
-        phone.value.trim() !== ""
-      );
+
+      if (
+        name.trim() === "" ||
+        email.value.trim() === "" ||
+        phone.value.trim() === ""
+      ) {
+        newFormErrors[index] = true;
+      } else {
+        emailjs.sendForm("service_vlc9i0q", "template_6wrpokj", form.current!, {
+          publicKey: "sQ5htKcWP_UaM9MrH",
+        });
+      }
     });
 
-    if (allFilled) {
-      alert("All fields are filled!");
-    } else {
-      alert("Please fill all fields before submitting.");
-    }
+    setFormErrors(newFormErrors);
   };
 
   return (
@@ -458,7 +474,7 @@ const Registration = () => {
                   activeProfileIndex !== null ? null : (
                     <p
                       key={index}
-                      className={`mb-4 flex h-14 w-full cursor-pointer items-center gap-4 rounded-xl border bg-neutral-50 px-4 shadow-md transition-transform duration-300 hover:scale-95 ${formFilled[index] ? "border-neutral-600 text-neutral-600" : "border-neutral-300 text-neutral-300"}`}
+                      className={`mb-4 flex h-14 w-full cursor-pointer items-center gap-4 rounded-xl border bg-neutral-50 px-4 shadow-md transition-transform duration-300 hover:scale-95 ${formFilled[index] ? "border-neutral-600 text-neutral-600" : `${formErrors[index] ? "border-red-500 text-red-500" : "border-neutral-300 text-neutral-300"}`}`}
                       onClick={() => handleProfileClick(index)}
                     >
                       <FaUserAlt className="text-xl" />
@@ -476,6 +492,7 @@ const Registration = () => {
                 >
                   <form
                     id={`profile${index + 1}`}
+                    ref={form}
                     className="flex w-full flex-col"
                     action="#"
                     onChange={(e) =>
@@ -489,39 +506,51 @@ const Registration = () => {
                     <a className="mb-2 flex text-sm font-medium text-neutral-600">
                       Full Name
                     </a>
-                    <input
-                      id={`name${index + 1}`}
-                      autoComplete="off"
-                      type="text"
-                      className="mb-4 w-full rounded-lg border border-neutral-300 bg-white p-2.5 text-sm text-black placeholder-neutral-500 focus:outline-none"
-                      placeholder="Enter full name"
-                      required
-                      onChange={(e) =>
-                        handleInputChange(index, "name", e.target.value)
-                      }
-                    />
+                    <a className="mb-4 flex w-full items-center overflow-hidden rounded-lg border border-neutral-300 bg-white text-sm text-black placeholder-neutral-500">
+                      <FaUserAlt className="ml-2.5 text-lg text-neutral-500" />
+                      <input
+                        id={`name${index + 1}`}
+                        name="fullname"
+                        autoComplete="off"
+                        type="text"
+                        className="flex-grow p-2.5 focus:outline-none"
+                        placeholder="Enter full name"
+                        required
+                        onChange={(e) =>
+                          handleInputChange(index, "name", e.target.value)
+                        }
+                      />
+                    </a>
                     <a className="mb-2 flex text-sm font-medium text-neutral-600">
                       Email Address
                     </a>
-                    <input
-                      id={`email${index + 1}`}
-                      autoComplete="off"
-                      type="email"
-                      className="mb-4 w-full rounded-lg border border-neutral-300 bg-white p-2.5 text-sm text-black placeholder-neutral-500 focus:outline-none"
-                      placeholder="example@gmail.com"
-                      required
-                    />
+                    <a className="mb-4 flex w-full items-center overflow-hidden rounded-lg border border-neutral-300 bg-white text-sm text-black placeholder-neutral-500">
+                      <FaEnvelope className="ml-2.5 text-lg text-neutral-500" />
+                      <input
+                        id={`email${index + 1}`}
+                        name="email"
+                        autoComplete="off"
+                        type="email"
+                        className="flex-grow p-2.5 focus:outline-none"
+                        placeholder="example@gmail.com"
+                        required
+                      />
+                    </a>
                     <a className="mb-2 flex text-sm font-medium text-neutral-600">
                       Phone Number
                     </a>
-                    <input
-                      id={`phone${index + 1}`}
-                      autoComplete="off"
-                      type="tel"
-                      className="w-full rounded-lg border border-neutral-300 bg-white p-2.5 text-sm text-black placeholder-neutral-500 focus:outline-none"
-                      placeholder="+62-XXX-XXXX-XXXX"
-                      required
-                    />
+                    <a className="flex w-full items-center overflow-hidden rounded-lg border border-neutral-300 bg-white text-sm text-black placeholder-neutral-500">
+                      <FaPhone className="ml-2.5 text-lg text-neutral-500" />
+                      <input
+                        id={`phone${index + 1}`}
+                        name="phonenumber"
+                        autoComplete="off"
+                        type="tel"
+                        className="flex-grow p-2.5 focus:outline-none"
+                        placeholder="+62-XXX-XXXX-XXXX"
+                        required
+                      />
+                    </a>
                   </form>
                 </div>
               ))}
@@ -530,7 +559,7 @@ const Registration = () => {
                   <input
                     type="submit"
                     className="flex h-10 w-full cursor-pointer items-center justify-center rounded-lg bg-blue-400 font-medium text-white"
-                    value={"Buy Now"}
+                    value="Buy Now"
                   />
                 </form>
               )}
