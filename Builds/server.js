@@ -10,7 +10,7 @@ const ticketChain = new TicketBlockchain();
 // Add detailed CORS configuration
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend URL
+    origin: "https://blockchain-ticketing-system.vercel.app/", // Your frontend URL
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   }),
