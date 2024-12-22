@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import cors from "cors";
 import QRCode from "qrcode";
@@ -10,7 +9,7 @@ const ticketChain = new TicketBlockchain();
 // Add detailed CORS configuration
 app.use(
   cors({
-    origin: "https://blockchain-ticketing-system.vercel.app/", // Your frontend URL
+    origin: "http://localhost:5173", // Your frontend URL
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   }),
@@ -123,7 +122,7 @@ app.post("/api/verify-ticket", (req, res) => {
 });
 
 // Add error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   console.error("Server error:", err);
   res.status(500).json({
     success: false,
