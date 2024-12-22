@@ -204,17 +204,18 @@ const Body: React.FC<BodyProps> = ({ onBuyTicket }) => {
       </p>
       <p className="relative flex items-center justify-center">
         <a className="absolute mb-8 font-['PassionOne'] text-3xl text-black blur">
-          PRESENTED BY DJ KIAN BOY JUNIOR
+          PRESENTED BY DJ KIAN ARAP JUNIOR
         </a>
         <a className="z-10 mb-8 font-['PassionOne'] text-3xl text-white">
-          PRESENTED BY DJ KIAN BOY JUNIOR
+          PRESENTED BY DJ KIAN ARAP JUNIOR
         </a>
       </p>
       <a
-        className="h-16 w-48 cursor-pointer content-center rounded-lg bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 font-['PassionOne'] text-3xl text-black shadow-[0_0_50px_5px_black]"
+        className="relative h-16 w-48 cursor-pointer content-center overflow-hidden rounded-lg bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 font-['PassionOne'] text-3xl text-black shadow-[0_0_50px_5px_black] transition-transform duration-300 hover:scale-110"
         onClick={onBuyTicket}
       >
         BUY TICKET
+        {/* <span className="absolute left-0 top-0 h-full w-1 bg-white"></span> */}
       </a>
     </div>
   );
@@ -297,8 +298,6 @@ const Stage = () => {
 };
 
 const Registration = () => {
-  const form = useRef<HTMLFormElement>(null);
-
   const Sections = ["A", "B", "C", "D", "E", "F", "G", "H"];
   const TicketsRemain = ["3", "5", "6", "10", "12", "17", "14", "19"];
   const Prices = [
@@ -324,6 +323,7 @@ const Registration = () => {
   const [formErrors, setFormErrors] = useState<boolean[]>(
     Array(count).fill(false),
   );
+  const form = useRef<HTMLFormElement>(null);
 
   const handleClick = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -373,12 +373,14 @@ const Registration = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted");
 
     const newFormErrors = Array(count).fill(false);
+    let allFormsFilled = true;
 
-    names.forEach((name, index) => {
+    const ticketData = names.map((name, index) => {
       const email = document.getElementById(
         `email${index + 1}`,
       ) as HTMLInputElement;
@@ -392,14 +394,86 @@ const Registration = () => {
         phone.value.trim() === ""
       ) {
         newFormErrors[index] = true;
-      } else {
-        emailjs.sendForm("service_vlc9i0q", "template_6wrpokj", form.current!, {
-          publicKey: "sQ5htKcWP_UaM9MrH",
-        });
+        allFormsFilled = false;
       }
+
+      return {
+        fullname: name.trim(),
+        email: email.value.trim(),
+        phone: phone.value.trim(),
+        section: Sections[activeIndex ?? 0],
+        price: Prices[activeIndex ?? 0],
+      };
     });
 
     setFormErrors(newFormErrors);
+
+    if (allFormsFilled) {
+      try {
+        // Create tickets and get QR codes
+        const response = await fetch(
+          "http://localhost:3001/api/create-tickets",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ tickets: ticketData }),
+          },
+        );
+
+        const result = await response.json();
+        console.log("Backend response:", result);
+
+        if (result.success) {
+          // Send emails with QR codes
+          for (let i = 0; i < result.tickets.length; i++) {
+            const ticket = result.tickets[i];
+            const qrCode = result.qrCodes[i].qrCode;
+
+            // Log template parameters
+            const templateParams = {
+              to_name: ticket.fullname,
+              user_email: ticket.email,
+              ticket_id: ticket.ticketId,
+              section: ticket.section,
+              price: ticket.price,
+              qr_code: qrCode,
+            };
+
+            console.log("Sending email with params:", templateParams);
+
+            try {
+              // Initialize EmailJS with your public key
+              emailjs.init("sQ5htKcWP_UaM9MrH");
+
+              const emailResult = await emailjs.send(
+                "service_vlc9i0q",
+                "template_6wrpokj",
+                templateParams,
+              );
+
+              console.log("Email sent successfully:", emailResult);
+              alert(`Ticket sent to ${ticket.email} successfully!`);
+            } catch (emailError: any) {
+              console.error("EmailJS Error:", emailError);
+              if (emailError.text) {
+                alert(`Email error: ${emailError.text}`);
+              } else {
+                alert(
+                  `Failed to send email to ${ticket.email}. ${emailError.message}`,
+                );
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Form submission error:", error);
+        alert("An error occurred during form submission. Please try again.");
+      }
+    } else {
+      alert("Please fill in all fields correctly.");
+    }
   };
 
   return (
@@ -567,13 +641,6 @@ const Registration = () => {
           )}
         </div>
       </div>
-      {/* <div className="absolute flex h-full w-full flex-col items-center justify-center text-white backdrop-brightness-50">
-        <a className="text-6xl font-bold">Congratulations!!!</a>
-        <a className="mt-4 text-lg font-medium">
-          You Have Purchased The Ticket
-        </a>
-        <a className="mt-10 font-light">please check you email</a>
-      </div> */}
     </>
   );
 };
