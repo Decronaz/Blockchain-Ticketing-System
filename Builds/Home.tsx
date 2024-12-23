@@ -3,6 +3,7 @@ import KianMusic from "/kianmusic.mp3";
 import {
   FaCamera,
   FaEnvelope,
+  FaHistory,
   FaMinus,
   FaPause,
   FaPhone,
@@ -559,7 +560,7 @@ const Registration = () => {
                   <div
                     key={index}
                     onClick={() => handleClick(index)}
-                    className="mb-4 flex min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 shadow-md transition-transform duration-300 hover:scale-95 hover:border-red-300"
+                    className="mb-4 flex min-h-32 w-full cursor-pointer justify-between overflow-hidden rounded-2xl border-[1.5px] border-neutral-200 bg-white p-5 shadow-md transition-transform duration-300 hover:scale-95 hover:border-neutral-400"
                   >
                     <p className="flex flex-col justify-between text-left">
                       <a className="text-base font-semibold">
@@ -696,7 +697,7 @@ const Registration = () => {
                 <form onSubmit={handleSubmit}>
                   <input
                     type="submit"
-                    className="flex h-10 w-full cursor-pointer items-center justify-center rounded-lg bg-blue-400 font-medium text-white"
+                    className="flex h-10 w-full cursor-pointer items-center justify-center rounded-lg bg-blue-400 font-medium text-white transition-transform duration-300 hover:scale-95 hover:bg-blue-500"
                     value="Buy Now"
                   />
                 </form>
@@ -704,6 +705,12 @@ const Registration = () => {
             </div>
           )}
         </div>
+      </div>
+      <div
+        className="absolute bottom-5 right-5 cursor-pointer"
+        onClick={() => setShowTicketSection(true)}
+      >
+        <FaHistory className="text-xl text-neutral-400" />
       </div>
       {showTicketSection && (
         <div className="fixed left-0 top-0 flex h-screen w-screen items-center justify-center backdrop-brightness-50">
