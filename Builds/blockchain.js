@@ -1,4 +1,3 @@
-//blockchain.js
 import pkg from "js-sha3";
 const { keccak256 } = pkg;
 import { v1 as uuidv1 } from "uuid";
@@ -7,6 +6,7 @@ class TicketBlockchain {
   constructor() {
     this.chain = [];
     this.pendingTickets = [];
+    this.allTickets = new Map(); // Store all tickets for persistence
     this.createNewBlock(100, "0", "0");
   }
 
@@ -19,26 +19,57 @@ class TicketBlockchain {
       hash: hash,
       previousBlockHash: previousBlockHash,
     };
+
+    // Store tickets in allTickets map before clearing pendingTickets
+    this.pendingTickets.forEach((ticket) => {
+      this.allTickets.set(ticket.ticketId, {
+        ticket,
+        blockHash: hash,
+        timestamp: newBlock.timestamp,
+      });
+    });
+
     this.pendingTickets = [];
     this.chain.push(newBlock);
     return newBlock;
   }
 
-  getLastBlock() {
-    return this.chain[this.chain.length - 1];
-  }
-
   createNewTicket(fullname, email, phone, section, price) {
+    const ticketId = uuidv1().split("-").join(""); // Generate unique ID
     const newTicket = {
+      ticketId,
       fullname,
       email,
       phone,
       section,
       price,
-      ticketId: uuidv1().split("-").join(""),
       purchaseDate: Date.now(),
     };
     return newTicket;
+  }
+
+  getTicketData(ticketId) {
+    const ticketInfo = this.allTickets.get(ticketId);
+    if (!ticketInfo) return null;
+
+    return {
+      ...ticketInfo.ticket,
+      blockHash: ticketInfo.blockHash,
+      timestamp: ticketInfo.timestamp,
+    };
+  }
+
+  getAllTickets() {
+    return Array.from(this.allTickets.values()).map((info) => ({
+      ...info.ticket,
+      blockHash: info.blockHash,
+      timestamp: info.timestamp,
+    }));
+  }
+
+  // Rest of the methods remain the same
+  getLastBlock() {
+    return this.chain[this.chain.length - 1];
   }
 
   addTicketToPending(ticketObj) {
@@ -61,18 +92,6 @@ class TicketBlockchain {
       hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
     }
     return nonce;
-  }
-
-  getTicketData(ticketId) {
-    let ticketData = null;
-    this.chain.forEach((block) => {
-      block.tickets.forEach((ticket) => {
-        if (ticket.ticketId === ticketId) {
-          ticketData = ticket;
-        }
-      });
-    });
-    return ticketData;
   }
 }
 

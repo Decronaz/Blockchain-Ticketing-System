@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import KianMusic from "/kianmusic.mp3";
 import {
+  FaCamera,
   FaEnvelope,
   FaMinus,
   FaPause,
@@ -12,6 +13,7 @@ import {
   FaUserAlt,
 } from "react-icons/fa";
 import { Html5QrcodeScanner } from "html5-qrcode";
+import QRCode from "qrcode";
 
 interface BodyProps {
   onBuyTicket: () => void;
@@ -298,11 +300,17 @@ const Stage = () => {
 };
 
 const Registration = () => {
+  interface ScanResult {
+    valid: boolean;
+    message: string;
+  }
+
   const [showTicketSection, setShowTicketSection] = useState(false);
-  const [ticketList, setTicketList] = useState<any[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
   const [showScanner, setShowScanner] = useState(false);
-  const [scanResult, setScanResult] = useState<string>("");
+  const [scanResult, setScanResult] = useState<ScanResult | null>(null);
+  const [allTickets, setAllTickets] = useState<any[]>([]);
+  const [showScanDetails, setShowScanDetails] = useState(false);
 
   const Sections = ["A", "B", "C", "D", "E", "F", "G", "H"];
   const TicketsRemain = ["3", "5", "6", "10", "12", "17", "14", "19"];
@@ -380,6 +388,16 @@ const Registration = () => {
   };
 
   useEffect(() => {
+    fetchAllTickets();
+  }, []);
+
+  useEffect(() => {
+    if (showTicketSection) {
+      fetchAllTickets();
+    }
+  }, [showTicketSection]);
+
+  useEffect(() => {
     let html5QrcodeScanner: any = null;
 
     if (showScanner) {
@@ -387,7 +405,7 @@ const Registration = () => {
         "reader",
         {
           fps: 10,
-          qrbox: { width: 250, height: 250 },
+          qrbox: { width: 200, height: 200 },
           aspectRatio: 1.0,
         },
         false,
@@ -408,23 +426,13 @@ const Registration = () => {
           );
 
           const verificationResult = await response.json();
-          if (verificationResult.valid && verificationResult.ticketData) {
-            setScanResult(
-              `Valid Ticket for ${verificationResult.ticketData.fullname} - Section ${verificationResult.ticketData.section}`,
-            );
-          } else {
-            setScanResult("Invalid Ticket!");
-          }
+          setScanResult(verificationResult);
+          setShowScanDetails(true);
 
-          // Stop scanning after successful scan
           html5QrcodeScanner.clear();
-          setTimeout(() => {
-            setScanResult("");
-            setShowScanner(false);
-          }, 3000);
         } catch (error) {
           console.error("Scanning error:", error);
-          setScanResult("Error scanning ticket");
+          setScanResult({ valid: false, message: "Error scanning ticket" });
         }
       };
 
@@ -435,7 +443,6 @@ const Registration = () => {
       html5QrcodeScanner.render(handleScanSuccess, handleScanError);
     }
 
-    // Cleanup function
     return () => {
       if (html5QrcodeScanner) {
         html5QrcodeScanner.clear().catch((error: any) => {
@@ -444,6 +451,28 @@ const Registration = () => {
       }
     };
   }, [showScanner]);
+
+  const fetchAllTickets = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/tickets");
+      const data = await response.json();
+      if (data.success) {
+        const ticketsWithQR = await Promise.all(
+          data.tickets.map(async (ticket: any) => {
+            const qrData = JSON.stringify({
+              ticketId: ticket.ticketId,
+              blockHash: ticket.blockHash,
+            });
+            const qrCode = await QRCode.toDataURL(qrData);
+            return { ...ticket, qrCode };
+          }),
+        );
+        setAllTickets(ticketsWithQR);
+      }
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -495,15 +524,7 @@ const Registration = () => {
         const result = await response.json();
 
         if (result.success) {
-          // Combine ticket data with QR codes
-          const ticketListData = result.tickets.map(
-            (ticket: any, index: number) => ({
-              ...ticket,
-              qrCode: result.qrCodes[index].qrCode,
-            }),
-          );
-
-          setTicketList(ticketListData);
+          await fetchAllTickets();
           setShowTicketSection(true);
         }
       } catch (error) {
@@ -515,9 +536,8 @@ const Registration = () => {
     }
   };
 
-  // Handler for selecting a ticket from the list
-  const handleTicketSelect = (ticket: any) => {
-    setSelectedTicket(ticket);
+  const CloseTicket = () => {
+    setShowTicketSection(false);
   };
 
   return (
@@ -687,8 +707,8 @@ const Registration = () => {
       </div>
       {showTicketSection && (
         <div className="fixed left-0 top-0 flex h-screen w-screen items-center justify-center backdrop-brightness-50">
-          <div className="flex h-[32rem] w-[28rem] flex-col items-center justify-center rounded-3xl bg-neutral-100 text-sm text-neutral-600">
-            {!selectedTicket ? (
+          <div className="relative flex h-[32rem] w-[28rem] flex-col items-center justify-center rounded-3xl bg-neutral-100 text-sm text-neutral-600">
+            {!selectedTicket && !showScanner && !showScanDetails ? (
               <>
                 <a className="font-['PassionOne'] text-4xl text-neutral-800">
                   Ticket Purchase Confirmation
@@ -699,25 +719,76 @@ const Registration = () => {
                   View ticket:
                 </a>
                 <div className="grid h-32 w-10/12 overflow-y-scroll pl-5 pr-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar]:w-2">
-                  {ticketList.map((ticket, index) => (
+                  {allTickets.map((ticket, index) => (
                     <a
                       key={index}
                       className="mb-4 flex h-14 w-full cursor-pointer items-center rounded-lg border border-neutral-200 bg-white px-4 font-semibold shadow-lg transition-transform duration-300 hover:scale-95 hover:border-neutral-600"
-                      onClick={() => handleTicketSelect(ticket)}
+                      onClick={() => setSelectedTicket(ticket)}
                     >
                       <FaUserAlt className="mr-4 text-xl" />
-                      {ticket.fullname}
+                      {ticket.fullname} - Section {ticket.section}
                     </a>
                   ))}
                 </div>
-                <button
-                  className="mt-4 cursor-pointer rounded-lg bg-green-500 px-4 py-2.5 text-white"
+                <a
+                  className="mt-6 cursor-pointer rounded-lg bg-blue-500 px-4 py-2.5 text-white shadow-lg transition-transform duration-300 hover:scale-105 hover:bg-blue-600"
+                  onClick={CloseTicket}
+                >
+                  Confirmed
+                </a>
+                <a className="mt-10 text-xs font-light text-neutral-500">
+                  Best wishes,
+                </a>
+                <a className="text-xs font-light text-neutral-500">
+                  The Golden Concert Team
+                </a>
+                <a
+                  className="absolute bottom-5 right-5 cursor-pointer text-2xl"
                   onClick={() => setShowScanner(true)}
                 >
-                  Scan QR Code
-                </button>
+                  <FaCamera />
+                </a>
               </>
-            ) : (
+            ) : showScanDetails ? (
+              <div className="flex w-full flex-col items-center p-6">
+                <h3 className="mb-6 text-2xl font-bold">
+                  {scanResult?.valid ? "Valid Ticket" : "Invalid Ticket"}
+                </h3>
+
+                {scanResult?.valid && (scanResult as any).ticketData && (
+                  <div className="w-full space-y-4 rounded-lg bg-white p-6 shadow-lg">
+                    <p className="font-semibold">
+                      Name: {(scanResult as any).ticketData?.name}
+                    </p>
+                    <p className="font-semibold">
+                      Email: {(scanResult as any).ticketData.email}
+                    </p>
+                    <p className="font-semibold">
+                      Phone: {(scanResult as any).ticketData.phonenumber}
+                    </p>
+                    <p className="font-semibold">
+                      Section: {(scanResult as any).ticketData.section}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Purchase Time:
+                      {new Date(
+                        (scanResult as any).ticketData.timestamp,
+                      ).toLocaleString()}
+                    </p>
+                  </div>
+                )}
+
+                <button
+                  className="mt-6 cursor-pointer rounded-lg bg-blue-500 px-4 py-2.5 text-white"
+                  onClick={() => {
+                    setShowScanDetails(false);
+                    setScanResult(null);
+                  }}
+                >
+                  Back to Tickets
+                </button>
+              </div>
+            ) : selectedTicket ? (
               <>
                 <a className="font-['PassionOne'] text-4xl text-neutral-800">
                   {selectedTicket.fullname}'s Ticket
@@ -734,33 +805,24 @@ const Registration = () => {
                 <a className="mb-6 text-xs text-neutral-500">
                   Section: {selectedTicket.section}
                 </a>
-                <button
+                <a
                   className="cursor-pointer rounded-lg bg-blue-500 px-4 py-2.5 text-white shadow-lg transition-transform duration-300 hover:scale-105 hover:bg-blue-600"
                   onClick={() => setSelectedTicket(null)}
                 >
                   Back to List
-                </button>
+                </a>
               </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {showScanner && (
-        <div className="fixed left-0 top-0 flex h-screen w-screen items-center justify-center backdrop-brightness-50">
-          <div className="flex h-[32rem] w-[28rem] flex-col items-center justify-center rounded-3xl bg-neutral-100">
-            <div id="reader" className="w-full max-w-sm"></div>
-            {scanResult && (
-              <div className="mt-4 text-center text-lg font-bold">
-                {scanResult}
+            ) : (
+              <div className="flex w-full flex-col items-center justify-center">
+                <div id="reader" className="w-full max-w-sm" />
+                <a
+                  className="mt-4 cursor-pointer rounded-lg bg-red-500 px-4 py-2.5 text-white"
+                  onClick={() => setShowScanner(false)}
+                >
+                  Close Scanner
+                </a>
               </div>
             )}
-            <button
-              className="mt-4 cursor-pointer rounded-lg bg-red-500 px-4 py-2.5 text-white"
-              onClick={() => setShowScanner(false)}
-            >
-              Close Scanner
-            </button>
           </div>
         </div>
       )}
