@@ -17,26 +17,22 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Create new tickets and mine a block
 app.post("/api/create-tickets", async (req, res) => {
   try {
     const { tickets } = req.body;
     const ticketData = [];
 
-    // Create tickets and add to pending
     for (const ticket of tickets) {
       const newTicket = ticketChain.createNewTicket(
         ticket.fullname,
         ticket.email,
         ticket.phone,
         ticket.section,
-        ticket.price,
       );
       ticketChain.addTicketToPending(newTicket);
       ticketData.push(newTicket);
     }
 
-    // Mine new block with tickets
     const previousBlock = ticketChain.getLastBlock();
     const previousBlockHash = previousBlock["hash"];
     const currentBlockData = {
@@ -55,7 +51,6 @@ app.post("/api/create-tickets", async (req, res) => {
       blockHash,
     );
 
-    // Generate QR codes for each ticket with complete information
     const qrCodes = await Promise.all(
       ticketData.map(async (ticket) => {
         const qrData = JSON.stringify({
@@ -92,7 +87,6 @@ app.post("/api/create-tickets", async (req, res) => {
   }
 });
 
-// Verify ticket with complete information
 app.post("/api/verify-ticket", (req, res) => {
   const { ticketId, blockHash } = req.body;
   const ticketData = ticketChain.getTicketData(ticketId);
@@ -124,7 +118,6 @@ app.post("/api/verify-ticket", (req, res) => {
   });
 });
 
-// New endpoint to get all tickets
 app.get("/api/tickets", (req, res) => {
   const allTickets = ticketChain.getAllTickets();
   res.json({
@@ -133,7 +126,6 @@ app.get("/api/tickets", (req, res) => {
   });
 });
 
-// Error handling middleware
 app.use((err, _req, res, _next) => {
   console.error("Server error:", err);
   res.status(500).json({

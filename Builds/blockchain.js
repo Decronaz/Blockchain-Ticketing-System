@@ -1,13 +1,22 @@
 import pkg from "js-sha3";
 const { keccak256 } = pkg;
-import { v1 as uuidv1 } from "uuid";
+import crypto from "crypto";
 
 class TicketBlockchain {
   constructor() {
     this.chain = [];
     this.pendingTickets = [];
-    this.allTickets = new Map(); // Store all tickets for persistence
+    this.allTickets = new Map();
     this.createNewBlock(100, "0", "0");
+  }
+
+  generateTicketId(fullname, email, section, timestamp) {
+    const randomBytes = crypto.randomBytes(32).toString("hex");
+    const uniqueString = `${fullname}-${email}-${section}-${timestamp}-${randomBytes}`;
+
+    const hash = keccak256(uniqueString);
+
+    return hash;
   }
 
   createNewBlock(nonce, previousBlockHash, hash) {
@@ -20,7 +29,6 @@ class TicketBlockchain {
       previousBlockHash: previousBlockHash,
     };
 
-    // Store tickets in allTickets map before clearing pendingTickets
     this.pendingTickets.forEach((ticket) => {
       this.allTickets.set(ticket.ticketId, {
         ticket,
@@ -34,16 +42,17 @@ class TicketBlockchain {
     return newBlock;
   }
 
-  createNewTicket(fullname, email, phone, section, price) {
-    const ticketId = uuidv1().split("-").join(""); // Generate unique ID
+  createNewTicket(fullname, email, phone, section) {
+    const timestamp = Date.now();
+    const ticketId = this.generateTicketId(fullname, email, section, timestamp);
+
     const newTicket = {
       ticketId,
       fullname,
       email,
       phone,
       section,
-      price,
-      purchaseDate: Date.now(),
+      purchaseDate: timestamp,
     };
     return newTicket;
   }
@@ -67,7 +76,6 @@ class TicketBlockchain {
     }));
   }
 
-  // Rest of the methods remain the same
   getLastBlock() {
     return this.chain[this.chain.length - 1];
   }

@@ -806,11 +806,10 @@ const Registration = () => {
                   src={selectedTicket.qrCode}
                   alt="Ticket QR Code"
                 />
-                <a className="text-xs text-neutral-500">
-                  Ticket ID: {selectedTicket.ticketId}
-                </a>
                 <a className="mb-6 text-xs text-neutral-500">
-                  Section: {selectedTicket.section}
+                  Ticket ID:
+                  <br />
+                  {selectedTicket.ticketId}
                 </a>
                 <a
                   className="cursor-pointer rounded-lg bg-blue-500 px-4 py-2.5 text-white shadow-lg transition-transform duration-300 hover:scale-105 hover:bg-blue-600"
