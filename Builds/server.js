@@ -17,10 +17,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", (req, res) => {
-  res.send("Express on Vercel");
-});
-
 app.post("/api/create-tickets", async (req, res) => {
   try {
     const { tickets } = req.body;
@@ -143,5 +139,3 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-module.exports = app;
